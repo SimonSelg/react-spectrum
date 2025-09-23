@@ -331,7 +331,7 @@ export class ElementNode<T> extends BaseNode<T> {
 
   setProps<E extends Element>(obj: {[key: string]: any}, ref: ForwardedRef<E>, CollectionNodeClass: CollectionNodeClass<any>, rendered?: ReactNode, render?: (node: Node<T>) => ReactElement): void {
     let node;
-    let {value, textValue, id, ...props} = obj;
+    let {value, textValue, id, 'aria-label': ariaLabel, ...props} = obj;
     if (this.node == null) {
       node = new CollectionNodeClass(id ?? `react-aria-${++this.ownerDocument.nodeId}`);
       this.node = node;
@@ -344,6 +344,9 @@ export class ElementNode<T> extends BaseNode<T> {
     node.rendered = rendered;
     node.render = render;
     node.value = value;
+    if (props['aria-label'] != undefined) {
+      node['aria-label'] = props['aria-label']
+    }
     node.textValue = textValue || (typeof props.children === 'string' ? props.children : '') || obj['aria-label'] || '';
     if (id != null && id !== node.key) {
       throw new Error('Cannot change the id of an item');
